@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
-// add socket.io to the project
+// [step6] - add socket.io to the client
 import socketIOClient from 'socket.io-client';
 
 function App() {
-  // state for messages
+  // [step7] : 
+  // init messages array where all messages will be stored
+  // messages array will be updated when new message is received
   const [messageList, setMessageList] = useState([]);
-  // state for new message (author + message text)
+  // [step8] - state for new message (author + message text) from client
   const [nickName, setNickName] = useState('');
   const [newMessageText, setNewMessageText] = useState('');
-  // state for socket
+  // [step9] - state for socket
   const [socket, setSocket] = useState(null);
 
-  // when component mounts
+  // [step10] - useEffect hook to connect to server
   useEffect(() => {
     // connect to server with socket.io
     const socket = socketIOClient('http://localhost:3001');
+    // set socket state
     setSocket(socket);
     // get initial messages from server and set messageList
     socket.on('initialMessageList', (messages) => {
@@ -28,7 +31,7 @@ function App() {
     return () => socket.disconnect();
   }, []);
 
-  // send message to server (emit)
+  // [step11] - send message to server (emit methode from socket)
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newMessageText && nickName) {

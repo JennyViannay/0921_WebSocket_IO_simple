@@ -12,10 +12,10 @@ const server = app.listen(port, () =>
   console.log(`app listening at http://localhost:${port}`)
 );
 
-// socket.io
+// [step1] - add socket.io to the project (npm install --save socket.io-client)
 const socketIO = require('socket.io');
 
-// init socket.io
+// [step2] - init socket.io
 // allows client to connect to server and exchange messages
 const io = socketIO(server, {
   cors: {
@@ -23,13 +23,19 @@ const io = socketIO(server, {
   },
 });
 
-// init messages array where all messages will be stored
+// [step3] - init messages array where all messages will be stored
+// messages array will be updated when new message is received
+// we can use this array to display all messages in the chat
+// we can also use mysql or mongoDB to store messages
 const messages = [
   // init first message from server
   { id: uniqid(), author: 'server', text: 'welcome to WildChat' },
 ];
 
-// websocket connection event
+// [step4] - websocket connection event
+// when client connects to server
+// we can use socket.id to identify each messages from client
+// we can use socket.emit to send messages to client
 io.on('connect', (socket) => {
   // log connection
   console.log('user connected');
@@ -37,18 +43,20 @@ io.on('connect', (socket) => {
   socket.emit('initialMessageList', messages);
 
   // receive message from client (on)
+  // messageFromClient event is emitted by client
   socket.on('messageFromClient', (messageTextAndAuthor) => {
     // add message to messages array
     const newMessage = { id: uniqid(), ...messageTextAndAuthor };
-    // log message
+    // log new message from client
     console.log('new message from a client: ', newMessage);
-    // add message to messages array
+    // add new message to messages array
     messages.push(newMessage);
-    // send message to client (emit)
+    // resend this message to the client (emit)
     io.emit('messageFromServer', newMessage);
   });
 
-  // disconnect event
+  // [step5] - disconnect event
+  // when client disconnects from server
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
