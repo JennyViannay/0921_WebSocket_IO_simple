@@ -1,5 +1,5 @@
 // WEB SOCKET is the solution for real time communication between client and server
-// WEB SOCKET is a protocol that allows two-way communication between a client and a server.
+// WEB SOCKET is also a protocol that allows two-way communication between a client and a server.
 
 // basic init server
 const express = require('express');
